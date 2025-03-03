@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Jobs Management', ~{::section})}">
+<body>
+<section>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Jobs Management</h2>
+    <a th:href="@{/admin}" class="btn btn-outline-secondary">Back to Dashboard</a>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Job Title</th>
+            <th>Employer</th>
+            <th>Posting Date</th>
+            <th>Status</th>
+            <th>Applications</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="job : ${jobs}">
+            <td th:text="${job.id}">ID</td>
+            <td>
+              <a th:href="@{'/jobs/' + ${job.id}}" th:text="${job.title}">Job Title</a>
+            </td>
+            <td th:text="${job.employer.name}">Employer</td>
+            <td th:text="${#temporals.format(job.postDate, 'yyyy-MM-dd')}">Posting Date</td>
+            <td>
+              <span class="badge bg-success" th:if="${job.status.name() == 'ACTIVE'}">Active</span>
+              <span class="badge bg-secondary" th:if="${job.status.name() == 'CLOSED'}">Closed</span>
+            </td>
+            <td th:text="${job.applications.size()}">Applications</td>
+            <td>
+              <div class="btn-group" role="group">
+                <a th:href="@{'/jobs/' + ${job.id}}" class="btn btn-sm btn-outline-primary">View</a>
+                <a th:href="@{'/applications/job/' + ${job.id}}" class="btn btn-sm btn-outline-info">Applications</a>
+                <a th:href="@{'/jobs/' + ${job.id} + '/edit'}" class="btn btn-sm btn-outline-warning">Edit</a>
+                <form th:action="@{'/admin/jobs/' + ${job.id} + '/delete'}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this job? This action cannot be undone.');">
+                  <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

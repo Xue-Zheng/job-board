@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Error', ~{::section})}">
+<body>
+<section>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header bg-danger text-white">
+            <h3 class="m-0">Error Occurred</h3>
+          </div>
+          <div class="card-body text-center">
+            <h4 th:if="${status}" th:text="${'Error ' + status + ': ' + error}">Error</h4>
+            <h4 th:unless="${status}">System Error</h4>
+
+            <p class="mb-4" th:if="${message}" th:text="${message}">Error Message</p>
+            <p class="mb-4" th:unless="${message}">An error occurred while processing your request. Please try again later.</p>
+
+            <div>
+              <a th:href="@{/}" class="btn btn-primary">Return to Homepage</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

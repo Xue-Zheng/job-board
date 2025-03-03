@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Post New Job', ~{::section})}">
+<body>
+<section>
+  <div class="mb-4">
+    <a th:href="@{/jobs}" class="btn btn-outline-secondary">&larr; Back to Job List</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Post New Job</h3>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/jobs/create}" th:object="${job}" method="post">
+        <div class="mb-3">
+          <label for="title" class="form-label">Job Title</label>
+          <input type="text" class="form-control" id="title" th:field="*{title}" required>
+          <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Job Description</label>
+          <textarea class="form-control" id="description" th:field="*{description}" rows="10" required></textarea>
+          <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+          <div class="form-text">Please provide details about job requirements, responsibilities, salary range, etc.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="deadlineDate" class="form-label">Application Deadline (Optional)</label>
+          <input type="date" class="form-control" id="deadlineDate" th:field="*{deadlineDate}">
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary">Post Job</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+</body>
+</html>

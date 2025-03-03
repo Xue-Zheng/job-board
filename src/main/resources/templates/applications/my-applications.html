@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('My Applications', ~{::section})}">
+<body>
+<section>
+  <h2 class="mb-4">My Applications</h2>
+
+  <div class="alert alert-info" th:if="${applications.empty}">
+    You haven't applied for any jobs yet. <a th:href="@{/jobs}">Browse available jobs</a>
+  </div>
+
+  <div class="table-responsive" th:unless="${applications.empty}">
+    <table class="table table-striped table-hover">
+      <thead>
+      <tr>
+        <th>Job</th>
+        <th>Employer</th>
+        <th>Application Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="jobApp : ${applications}">
+        <td>
+          <a th:href="@{/jobs/{id}(id=${jobApp.job.id})}" th:text="${jobApp.job.title}">Job Title</a>
+        </td>
+        <td th:text="${jobApp.job.employer.name}">Employer Name</td>
+        <td th:text="${#temporals.format(jobApp.applicationDate, 'yyyy-MM-dd')}">Application Date</td>
+        <td>
+          <span class="badge bg-warning" th:if="${jobApp.status.name() == 'PENDING'}">Pending</span>
+          <span class="badge bg-success" th:if="${jobApp.status.name() == 'ACCEPTED'}">Accepted</span>
+          <span class="badge bg-danger" th:if="${jobApp.status.name() == 'REJECTED'}">Rejected</span>
+        </td>
+        <td>
+          <a th:href="@{/applications/{id}(id=${jobApp.id})}" class="btn btn-sm btn-outline-info">View Details</a>
+          <form th:action="@{/applications/{id}/withdraw(id=${jobApp.id})}" method="post" style="display: inline;" th:if="${jobApp.status.name() == 'PENDING'}">
+            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to withdraw this application?');">Withdraw</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout('Home', ~{::section})}">
+<body>
+<section>
+  <div class="py-5 bg-light rounded-3 mb-4">
+    <div class="container">
+      <h1 class="display-5 fw-bold">Welcome to E tū Union Job Board</h1>
+      <p class="col-md-8 fs-4">A platform connecting union members with quality jobs. Register to browse and apply for jobs, or post positions to recruit suitable talent.</p>
+      <div class="d-flex gap-3 mt-4">
+        <a sec:authorize="!isAuthenticated()" th:href="@{/register}" class="btn btn-primary btn-lg">Register Account</a>
+        <a sec:authorize="hasRole('JOB_SEEKER')" th:href="@{/jobs}" class="btn btn-primary btn-lg">Browse Jobs</a>
+        <a sec:authorize="hasRole('EMPLOYER')" th:href="@{/jobs/create}" class="btn btn-success btn-lg">Post Job</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2 class="mb-4">Latest Jobs</h2>
+
+    <div class="alert alert-info" th:if="${jobs.empty}">
+      There are currently no active jobs. Please check back later or contact an administrator.
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4" th:unless="${jobs.empty}">
+      <div class="col" th:each="job : ${jobs}">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${job.title}">Job Title</h5>
+            <h6 class="card-subtitle mb-2 text-muted" th:text="${'Employer: ' + job.employer.name}">Employer Name</h6>
+            <p class="card-text" th:text="${#strings.abbreviate(job.description, 150)}">Job description...</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted" th:text="${'Posted on: ' + #temporals.format(job.postDate, 'yyyy-MM-dd')}">Post Date</small>
+              <a th:href="@{'/jobs/' + ${job.id}}" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a th:href="@{/jobs}" class="btn btn-outline-primary">View All Jobs</a>
+    </div>
+  </div>
+</section>
+</body>
+</html>

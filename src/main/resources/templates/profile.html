@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout('User Profile', ~{::section})}">
+<body>
+<section>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center">User Profile</h3>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div class="mb-3">
+              <span class="badge bg-primary" th:if="${user.role.name() == 'ADMIN'}">Administrator</span>
+              <span class="badge bg-success" th:if="${user.role.name() == 'EMPLOYER'}">Employer</span>
+              <span class="badge bg-info" th:if="${user.role.name() == 'JOB_SEEKER'}">Job Seeker</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Name:</div>
+            <div class="col-md-9" th:text="${user.name}">User Name</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Email:</div>
+            <div class="col-md-9" th:text="${user.email}">user@example.com</div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-3 fw-bold">Account Type:</div>
+            <div class="col-md-9" th:text="${user.role.name() == 'JOB_SEEKER' ? 'Job Seeker' : user.role.name() == 'EMPLOYER' ? 'Employer' : 'Administrator'}">Role</div>
+          </div>
+
+          <!-- For Job Seekers -->
+          <div sec:authorize="hasRole('JOB_SEEKER')">
+            <hr>
+            <h4 class="mb-3">Job Seeker Information</h4>
+            <div class="d-grid gap-2">
+              <a th:href="@{/applications/my-applications}" class="btn btn-primary">My Applications</a>
+            </div>
+          </div>
+
+          <!-- For Employers -->
+          <div sec:authorize="hasRole('EMPLOYER')">
+            <hr>
+            <h4 class="mb-3">Employer Information</h4>
+            <div class="d-grid gap-2 d-md-flex">
+              <a th:href="@{/jobs/my-jobs}" class="btn btn-primary me-md-2">My Jobs</a>
+              <a th:href="@{/jobs/create}" class="btn btn-success">Post New Job</a>
+            </div>
+          </div>
+
+          <!-- For Admins -->
+          <div sec:authorize="hasRole('ADMIN')">
+            <hr>
+            <h4 class="mb-3">Admin Actions</h4>
+            <div class="d-grid gap-2 d-md-flex">
+              <a th:href="@{/templates/admin}" class="btn btn-primary me-md-2">Admin Dashboard</a>
+            </div>
+          </div>
+
+          <hr class="my-4">
+          <h4 class="mb-3">Account Management</h4>
+          <div class="alert alert-info">
+            Password change functionality is coming soon.
+          </div>
+
+          <form th:action="@{/logout}" method="post" class="mt-4">
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-danger">Logout</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>
